@@ -257,13 +257,18 @@ class TinyGsmBG96 : public TinyGsmModem<TinyGsmBG96>,
    */
  public:
   BG96RegStatus getRegistrationStatus() {
-    // Check first for EPS registration
-    BG96RegStatus epsStatus = (BG96RegStatus)getRegistrationStatusXREG("CEREG");
-
-    // If we're connected on EPS, great!
-    if (epsStatus == REG_OK_HOME || epsStatus == REG_OK_ROAMING) {
-      return epsStatus;
-    } else {
+    // Check first for EPS registration 4G
+    BG96RegStatus epsStatus4G = (BG96RegStatus)getRegistrationStatusXREG("CEREG");
+    // Check first for EPS registration 2G
+    BG96RegStatus epsStatus2G = (BG96RegStatus)getRegistrationStatusXREG("CGREG");
+    // If we're connected on EPS 4G, great!
+    if (epsStatus4G == REG_OK_HOME || epsStatus4G == REG_OK_ROAMING || epsStatus4G == REG_SEARCHING) {
+      return epsStatus4G;
+    } 
+    else if (epsStatus2G == REG_OK_HOME || epsStatus2G == REG_OK_ROAMING || epsStatus2G == REG_SEARCHING) {
+      return epsStatus2G;
+    } 
+    else {
       // Otherwise, check generic network status
       return (BG96RegStatus)getRegistrationStatusXREG("CREG");
     }
